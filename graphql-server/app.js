@@ -5,6 +5,7 @@ const graphqlHTTP = require('express-graphql');
 const schema = require('./src/Schema');
 const resolvers = require('./src/resolvers');
 const mongoose = require('mongoose');
+var bcrypt = require('bcryptjs');
 
 const app = express();
 
@@ -27,11 +28,12 @@ const connectString = `mongodb+srv://user_1:Abc123456789@cluster0-gi2y8.gcp.mong
 //     ${process.env.MONGO_DB}
 //     ?retryWrites=true&w=majority`;
 
-console.log(connectString);
+console.log(`string connect:  ${connectString}`);
 
 mongoose.connect(connectString).then(() => {
     app.listen(3000);
+    console.log("connected monogo db");
 }).catch(err => {
-    console.log(err);
+    console.error("can't connect mongo db");
 });
 
