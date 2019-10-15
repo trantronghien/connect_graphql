@@ -10,12 +10,21 @@ var userSchema = new Schema({
         type: String,
         required: true
     },
-    createEvents: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Event'
-        }
-    ]
+    // createEvents: [
+    //     {
+    //         type: Schema.Types.ObjectId,
+    //         ref: 'Event'
+    //     }
+    // ]
+    permission: {
+        type: Number,
+        required: true
+    },
+    created: {
+        type: Date,
+        required: true
+    }
+
 });
 
 module.exports = mongoose.model('User', userSchema);

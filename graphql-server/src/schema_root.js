@@ -1,6 +1,8 @@
 
 const graphql = require('graphql');
 const resolvers = require('./resolvers');
+// const user = require('./resolvers');
+const User = require('../models/user');
 
 const {
        GraphQLObjectType, GraphQLString,
@@ -9,52 +11,51 @@ const {
        GraphQLFloat
 } = graphql;
 
-const EventType = new GraphQLObjectType({
-       name: 'Events',
+const UserType = new GraphQLObjectType({
+       name: 'User',
        fields: () => ({
               _id: { type: GraphQLID },
-              title: { type: GraphQLString },
-              description: { type: GraphQLString },
-              price: { type: GraphQLFloat },
-              date: { type: GraphQLString }
+              email: { type: GraphQLString },
+              created: { type: GraphQLString }
               //  creator: User!
        })
 });
-const BookType = new GraphQLObjectType({
-       name: 'Book',
+
+const UserInput = new GraphQLObjectType({
+       name: 'UserInput',
        fields: () => ({
-              id: { type: GraphQLID },
-              name: { type: GraphQLString },
-              pages: { type: GraphQLInt }
+              _id: { type: GraphQLID },
+              email: { type: GraphQLString },
+              password: { type: GraphQLString },
+              permission: { type: GraphQLFloat },
+              created: { type: GraphQLString }
+              //  creator: User!
        })
 });
 
 const RootQuery = new GraphQLObjectType({
        name: 'Query',
        fields: {
-              events: {
-                     type: EventType,
-                     //        // args: { id: { type: GraphQLID } },
+              User: {
+                     type: UserType,
+                     args: { id: { type: GraphQLID } },
+                     // resolve: resolvers.user
                      resolve(parent, args) {
-                            // console.log("RootQuery");
-                            // var event = {
-                            //        title: "adbasmdas",
-                            //        description: "adjasdka aksdlasd",
-                            //        price: 19.3,
-                            //        date: new Date().toISOString()
-                            // }
-                            return resolvers.events;
+                            try {
+                                   const user = User.findById(args.id);
+                                   console.log(args.id);
+                                   return user.map(usr => {
+                                          return {
+                                                 _id: usr._doc._id,
+                                                 email: usr.email,
+                                                 created: usr.created
+                                          }
+                                   });
+                            } catch (err) {
+                                   throw err;
+                            }
                      }
               },
-              book: {
-                     type: BookType,
-                     resolve(parent, args) {
-                            return {
-                                   name: "hjads",
-                                   pages: 1
-                            };
-                     }
-              }
        }
 });
 

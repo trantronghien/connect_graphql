@@ -20,13 +20,8 @@ app.use('/graphql', graphqlHTTP({
 //     res.send("hello ");
 // });
 
-const connectString = `mongodb+srv://user_1:Abc123456789@cluster0-gi2y8.gcp.mongodb.net/event-react?retryWrites=true&w=majority`
-// const connectString = `mongodb+srv://
-//     ${process.env.MONGO_USER}:
-//     ${process.env.MONGO_PASSWORD}
-//     @cluster0-gi2y8.gcp.mongodb.net/
-//     ${process.env.MONGO_DB}
-//     ?retryWrites=true&w=majority`;
+// const connectString = `mongodb+srv://user_1:Abc123456789@cluster0-gi2y8.gcp.mongodb.net/event-react?retryWrites=true&w=majority`
+const connectString = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-gi2y8.gcp.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
 
 console.log(`string connect:  ${connectString}`);
 

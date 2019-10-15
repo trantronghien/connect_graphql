@@ -39,10 +39,12 @@ module.exports = {
         try{
             const user = await User.find();
             return user.map(usr => {
+                console.log(usr._doc._id.toString()); 
                 return {
-                    // ...usr._doc,
+                    ...usr._doc,
                     _id: usr._doc._id.toString(),
-                    email: usr._doc.email
+                    email: usr._doc.email,
+                    created:  usr._doc.created
                 }
             });
         }catch(err){
@@ -67,7 +69,7 @@ module.exports = {
         });
     },
 
-    registerUser: async args => {
+    registerUser: async(parent, args) => {
         try {
             console.log("res: " + args);
             const existingUser = await User.findOne({ email: args.userInput.email });
