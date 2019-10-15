@@ -20,7 +20,10 @@ module.exports = {
     events: async () => {
         try {
             const events = await Event.find();
+            console.log(event);
             return events.map(event => {
+                console.log(event);
+                
                 return {
                     ...event._doc,
                     _id: event._doc._id.toString(),
@@ -32,14 +35,22 @@ module.exports = {
             throw err;
         }
     },
-    // user: () => {
-    //     const user = new User({
-    //         email: "trantronghien@gmail.com",
-    //         password: "123424"
-    //     });
-    //     return user._doc;
-    //     // return ne{ email: "trantronghien@gmail.com" , password:"123424" };
-    // },
+    user: async () => {
+        try{
+            const user = await User.find();
+            return user.map(usr => {
+                return {
+                    // ...usr._doc,
+                    _id: usr._doc._id.toString(),
+                    email: usr._doc.email
+                }
+            });
+        }catch(err){
+            throw err;
+        }
+        
+        // return ne{ email: "trantronghien@gmail.com" , password:"123424" };
+    },
     createEvents: (args) => {
         const event = new Event({
             title: args.event.title,
@@ -58,6 +69,7 @@ module.exports = {
 
     registerUser: async args => {
         try {
+            console.log("res: " + args);
             const existingUser = await User.findOne({ email: args.userInput.email });
             if (existingUser) {
                 throw new Error('User exists already.');

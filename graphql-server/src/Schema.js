@@ -52,7 +52,12 @@ module.exports = buildSchema(`
 
     type RootQuery{
         events: [Event!]!
-        user: [User!]!
+        user: [OutUser!]!
+    }
+
+    type OutUser {
+        _id: String!
+        email: String!
     }
 
     type RootMutation{

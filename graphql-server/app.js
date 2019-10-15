@@ -2,17 +2,17 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const graphqlHTTP = require('express-graphql');
 
-const schema = require('./src/Schema');
+// const schema = require('./src/Schema');
+const schema = require('./src/schema_root');
 const resolvers = require('./src/resolvers');
 const mongoose = require('mongoose');
-var bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use('/graphql', graphqlHTTP({
-    schema: schema,
-    rootValue: resolvers,
+    schema,
     graphiql: true
 }));
 
@@ -31,9 +31,10 @@ const connectString = `mongodb+srv://user_1:Abc123456789@cluster0-gi2y8.gcp.mong
 console.log(`string connect:  ${connectString}`);
 
 mongoose.connect(connectString).then(() => {
-    app.listen(3000);
     console.log("connected monogo db");
 }).catch(err => {
     console.error("can't connect mongo db");
 });
+
+app.listen(3000);
 
