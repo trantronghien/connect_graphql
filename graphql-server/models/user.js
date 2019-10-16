@@ -10,12 +10,12 @@ var userSchema = new Schema({
         type: String,
         required: true
     },
-    // createEvents: [
-    //     {
-    //         type: Schema.Types.ObjectId,
-    //         ref: 'Event'
-    //     }
-    // ]
+    createEvents: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Post'
+        }
+    ],
     permission: {
         type: Number,
         required: true
