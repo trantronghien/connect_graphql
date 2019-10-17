@@ -4,6 +4,7 @@ const resolvers = require('./resolvers');
 // const user = require('./resolvers');
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const {
        GraphQLObjectType, GraphQLString,
@@ -36,11 +37,24 @@ const UserInput = new GraphQLInputObjectType({
 const RootQuery = new GraphQLObjectType({
        name: 'Query',
        fields: {
+              test: {
+                     type: GraphQLString,
+                     resolve(parent , args) {
+                            return "abc";
+                     }
+              },
               User: {
                      type: UserType,
                      args: { id: { type: GraphQLID } },
                      // resolve: resolvers.user
-                     resolve(parent, args) {
+                     // 5da6ddb16dd74e6220b3c0e1
+                     resolve(parent ,args) {
+                            console.log("adas");
+                            
+                            // console.log(req);
+                            // if (!req.isAuth) {
+                            //        throw new Error('Unauthenticated!');
+                            // }
                             try {
                                    const user = User.findById(args.id);
                                    console.log(args.id);
@@ -101,22 +115,40 @@ const Mutation = new GraphQLObjectType({
                      }
 
               },
-              // addAuthor: {
-              //        type: GraphQLString,
-              // args: {
-              //     //GraphQLNonNull make these field required
-              //     name: { type: new GraphQLNonNull(GraphQLString) },
-              //     age: { type: new GraphQLNonNull(GraphQLInt) }
-              // },
-              // resolve(parent, args) {
-              //     let author = new Author({
-              //         name: args.name,
-              //         age: args.age
-              //     });
-              //     return author.save();
-              //               return "Mutation";
-              //        }
-              // }
+              login: {
+                     type: new GraphQLObjectType({
+                            name: "AuthData",
+                            fields: () => ({
+                                   userId: { type: GraphQLID },
+                                   token: { type: GraphQLString },
+                                   tokenExpiration: { type: GraphQLInt }
+                            })
+                     }),
+                     description: "login account",
+                     args: {
+                            email: { type: new GraphQLNonNull(GraphQLString) },
+                            password: { type: new GraphQLNonNull(GraphQLString) }
+                     },
+                     resolve: async (parent, { email, password }) => {
+                            const user = await User.findOne({ email: email });
+                            if (!user) {
+                                   throw new Error('User does not exist!');
+                            }
+                            const isEqual = await bcrypt.compare(password, user.password);
+                            if (!isEqual) {
+                                   throw new Error('Password is incorrect!');
+                            }
+                            const token = jwt.sign(
+                                   { userId: user.id, email: user.email },
+                                   'somesupersecretkey',
+                                   {
+                                          expiresIn: '1h'
+                                   }
+                            );
+                            return { userId: user.id, token: token, tokenExpiration: 1 };
+                     }
+
+              }
        }
 });
 

@@ -9,10 +9,14 @@ const schema = require('./src/schema_root');
 const resolvers = require('./src/resolvers');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const isAuth = require('./middleware/auth')
 
 const app = express();
 
 app.use(bodyParser.json());
+// using middleware
+app.use(isAuth);
+
 app.use('/graphql', graphqlHTTP({
     schema,
     graphiql: true
@@ -25,7 +29,7 @@ app.use('/graphql', graphqlHTTP({
 // const connectString = `mongodb+srv://user_1:Abc123456789@cluster0-gi2y8.gcp.mongodb.net/event-react?retryWrites=true&w=majority`
 const connectString = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-gi2y8.gcp.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
 
-console.log(`string connect:  ${connectString}`);
+// console.log(`string connect:  ${connectString}`);
 
 mongoose.connect(connectString).then(() => {
     console.log("connected monogo db");
