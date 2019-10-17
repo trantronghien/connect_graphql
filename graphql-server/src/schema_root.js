@@ -45,19 +45,21 @@ const RootQuery = new GraphQLObjectType({
               },
               User: {
                      type: UserType,
-                     args: { id: { type: GraphQLID } },
+                     args: { 
+                            email: { type: GraphQLString },
+                            // access_token: {type: new GraphQLNonNull(GraphQLString)}
+                     },
                      // resolve: resolvers.user
                      // 5da6ddb16dd74e6220b3c0e1
-                     resolve(parent ,args) {
-                            console.log("adas");
-                            
-                            // console.log(req);
-                            // if (!req.isAuth) {
-                            //        throw new Error('Unauthenticated!');
-                            // }
-                            try {
-                                   const user = User.findById(args.id);
-                                   console.log(args.id);
+                     resolve(parent ,args ,context) {
+                            try {  
+                                   if (!context.isAuth) {
+                                          throw new Error('Unauthenticated!');
+                                   }
+                                   const user = User.findOne({ email: args.email });
+                                   if(!user){
+                                          throw new Error('User not found by email: '+ args.email);
+                                    }
                                    return user.map(usr => {
                                           return {
                                                  _id: usr._doc._id,
