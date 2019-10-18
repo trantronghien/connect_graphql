@@ -85,6 +85,9 @@ module.exports.UserResolverQuery = {
         }
     }
 }
+
+
+
 module.exports.UserResolverMutation = {
     registerUser: {
         type: UserType,

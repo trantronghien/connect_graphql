@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const { errorName } = require('../error/errorUtils');
 const { dateToString } = require('../utils/dateUtils');
 const { UserResolverQuery , UserResolverMutation } = require('../src/resolvers/userResolver');
+const { PostResolverMutation , PostResolverQuery } = require('../src/resolvers/postResolver');
 
 const {
        GraphQLObjectType, GraphQLString,
@@ -33,6 +34,7 @@ const Mutation = new GraphQLObjectType({
               //        }
               // }
               ...UserResolverMutation,
+              ...PostResolverMutation,
        }
 });
 
