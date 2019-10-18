@@ -2,6 +2,8 @@
     "env":{
         "MONGO_USER": "user_1",
         "MONGO_PASSWORD": "Abc123456789",
-        "MONGO_DB": "event-react"
+        "MONGO_DB": "event-react",
+        "NODE_ENV": "development",
+        "SECRET_KEY": "somesupersecretkey"
     }
 }

@@ -9,18 +9,32 @@ const schema = require('./src/schema_root');
 const resolvers = require('./src/resolvers');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const isAuth = require('./middleware/auth')
+const isAuth = require('./middleware/auth');
+const getErrorCode = require('./error/error');
 
 const app = express();
 
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 // using middleware
 app.use(isAuth);
 
-app.use('/graphql', graphqlHTTP({
+app.use('/graphql' , (req, res) => {
+   graphqlHTTP({
     schema,
-    graphiql: true
-}));
+    graphiql: process.env.NODE_ENV === 'development',
+    context: { req },
+    customFormatErrorFn: (err) => {
+      const error = getErrorCode(err.message);
+      const stackError = process.env.NODE_ENV === 'development' ? err.stack : "";
+      if(!error){
+        return ({ message: "Internal server error: " + err.message , statusCode: 501, stack: stackError });
+      }
+      return ({ message: error.message, statusCode: error.statusCode, stack: stackError});
+    }
+  })(req, res)
+}
+);
+
 
 // app.get('/',(req , res , next) =>{
 //     res.send("hello ");
