@@ -1,6 +1,8 @@
 exports.errorName = {
     UNAUTHORIZED: 'UNAUTHORIZED',
     USER_NOT_EXISTS: 'USER_NOT_EXISTS',
+    USER_ALREADY_EXISTS: 'USER_ALREADY_EXISTS',
+    MAIL_NOT_AVAILABLE: 'MAIL_NOT_AVAILABLE',
     PASSWORD_INCORRECT: 'PASSWORD_INCORRECT',
     ORTHER: 'ORTHER',
     POST_CREATE_ERROR: 'POST_CREATE_ERROR',
@@ -15,6 +17,14 @@ exports.errorType = {
     },
     USER_NOT_EXISTS: {
         message: 'User does not exist!',
+        statusCode: 401
+    },
+    USER_ALREADY_EXISTS:{
+        message: 'user already exists',
+        statusCode: 401
+    },
+    MAIL_NOT_AVAILABLE: {
+        message: 'email not available',
         statusCode: 401
     },
     PASSWORD_INCORRECT: {

@@ -2,7 +2,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const graphql = require('graphql');
 const User = require('../../models/user');
-const { dateToString } = require('../../utils/dateUtils');
+const { dateToString, currentDate } = require('../../utils/dateUtils');
+const stringUtil = require('../../utils/StringUtils');
 const { errorName } = require('../../error/errorUtils');
 
 
@@ -20,14 +21,14 @@ const UserType = new GraphQLObjectType({
         _id: { type: GraphQLID },
         email: { type: GraphQLString },
         created: { type: GraphQLString },
-        permission: { type: GraphQLString }
+        permission: { type: GraphQLString },
+        message: { type: GraphQLString }
     })
 });
 
 const UserInput = new GraphQLInputObjectType({
     name: 'UserInput',
     fields: () => ({
-        _id: { type: GraphQLID },
         email: { type: new GraphQLNonNull(GraphQLString) },
         permission: { type: GraphQLInt },
         password: { type: new GraphQLNonNull(GraphQLString) }
@@ -49,7 +50,6 @@ const checkAccessToken = access_token => {
         return true;
     }
 }
-
 
 module.exports.UserResolverQuery = {
     User: {
@@ -73,7 +73,8 @@ module.exports.UserResolverQuery = {
                         return {
                             _id: user._id,
                             email: user.email,
-                            created: user.created
+                            created: user.created,
+                            message: "success"
                         };
                     } else {
                         throw new Error(errorName.UNAUTHORIZED);
@@ -96,20 +97,34 @@ module.exports.UserResolverMutation = {
             input: { type: new GraphQLNonNull(UserInput) }
         },
         resolve: async (parent, { input }) => {
-            const hashedPassword = await bcrypt.hash(input.password, 12);
-            const user = new User({
-                email: input.email,
-                password: hashedPassword,
-                permission: 1,
-                created: dateToString
-            });
-            const result = await user.save();
-            return {
-                _id: result._id,
-                email: result.email,
-                created: result.created,
-                permission: result.permission,
-            };
+            try {
+                const userFind = await User.findOne({ email: input.email });
+                const hashedPassword = await bcrypt.hash(input.password, 12);
+                
+                if(stringUtil.isMail(input.email) == false){
+                    throw Error(errorName.MAIL_NOT_AVAILABLE)
+                }else{
+                    if (userFind !== null) {
+                        throw new Error(errorName.USER_ALREADY_EXISTS);
+                    }
+                    const user = new User({
+                        email: input.email,
+                        password: hashedPassword,
+                        permission: 1,
+                        created: currentDate
+                    });
+                    const result = await user.save();
+                    return {
+                        _id: result._id,
+                        email: result.email,
+                        created: result.created,
+                        permission: result.permission,
+                        message: "register success!!"
+                    };
+                }
+            } catch (err) {
+                throw err;
+            }
         }
 
     },
