@@ -2,12 +2,12 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var postSchema = new Schema({
-    id: {
-        type: String,
-        required: true
-    },
     post_date: {
         type: Date,
+        required: true
+    },
+    post_title:{
+        type: String,
         required: true
     },
     post_content: {
@@ -24,27 +24,37 @@ var postSchema = new Schema({
     },
     post_like_count: {
         type: String,
-        required: true
+        required: false
     },
     post_comment_count: {
         type: Number,
-        required: true
+        required: false
     },
     post_has_article: {
         type: Number,
-        required: true
+        required: false
     },
     article_title: {
         type: String,
-        required: true
+        required: false
     },
     article_content: {
         type: String,
-        required: true
+        required: false
     },
     creator: {
         type: Schema.Types.ObjectId,
         ref: 'User'
     }
-});
+}); 
 
+// support full-text search 
+postSchema.index({post_title: 'text', post_content: 'text' , 
+article_title: 'text' , article_content: 'text'});
+// MyModel.find({$text: {$search: searchString}})
+//        .skip(20)
+//        .limit(10)
+//        .exec(function(err, docs) { 
+
+//         });
+module.exports = mongoose.model('Posts', postSchema);

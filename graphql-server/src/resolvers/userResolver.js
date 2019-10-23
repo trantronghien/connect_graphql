@@ -61,7 +61,7 @@ module.exports.UserResolverQuery = {
         resolve: async (parent, args, context) => {
             try {
                 if (!args.access_token || args.access_token === '') {
-                    if (!context.isAuth) {
+                    if (!context.req.isAuth) {
                         throw new Error(errorName.UNAUTHORIZED);
                     }
                 } else {
