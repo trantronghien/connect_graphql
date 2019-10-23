@@ -8,6 +8,7 @@ exports.errorName = {
     POST_CREATE_ERROR: 'POST_CREATE_ERROR',
     POST_NOT_FOUND_BY_ID: 'POST_NOT_FOUND_BY_ID',
     POST_NOT_FOUND: 'POST_NOT_FOUND',
+    NOT_FOUND_DATA: 'NOT_FOUND_DATA',
 }
 
 exports.errorType = {
@@ -41,6 +42,10 @@ exports.errorType = {
     },
     POST_NOT_FOUND:{
         message: 'post not found',
+        statusCode: 404
+    },
+    NOT_FOUND_DATA:{
+        message: 'not found data',
         statusCode: 404
     },
     ORTHER: {

@@ -42,6 +42,7 @@ const listPostsType = new GraphQLList(
         name: 'Posts',
         fields: () => ({
             _id: { type: GraphQLID },
+            post_title: { type: GraphQLString },
             post_date: { type: GraphQLString },
             post_content: { type: GraphQLString },
             post_status: { type: GraphQLString },
@@ -72,7 +73,7 @@ module.exports.PostResolverMutation = {
                             post_has_article: { type: GraphQLInt },
                             article_title: { type: GraphQLString },
                             article_content: { type: GraphQLString },
-                            creator: { type: GraphQLID },
+                    
                         })
                     }))
             }
@@ -96,9 +97,10 @@ module.exports.PostResolverMutation = {
                         });
                         if (post.post_has_article == 1) {
                             posts.post_has_article = post.post_has_article;
-                            posts.article_title = post.article_title;
-                            posts.article_content = post.article_content;
+                            posts.article_title = !post.article_title ? post.post_title: post.article_title;
+                            posts.article_content = !post.article_content ? post.article_content: post.article_content;
                         }
+                        posts.createIndex({ post_title: "text" , post_content:"text" });
                         return posts.save();
                     })
                 ).then(listPost => {
@@ -309,9 +311,11 @@ module.exports.PostResolverMutation = {
         args: {
             access_token: { type: GraphQLString },
             search: { type: GraphQLString },
+            page: { type : GraphQLInt},
+            limit: { type : GraphQLInt},
         },
         description: "search post by title or content",
-        resolve: async (parent, { search, access_token }, context) => {
+        resolve: async (parent, { search, access_token , page , limit }, context) => {
             try {
                 if (!access_token || access_token === '') {
                     if (!context.req.isAuth) {
@@ -320,7 +324,26 @@ module.exports.PostResolverMutation = {
                 }
                 const userInfo = checkAccessToken(access_token);
                 if (userInfo !== null) {
-                    return
+                    const result = Posts.find({$text: {$search: search}})
+                    // .sort()
+                    .skip(page)
+                    .limit(limit)
+                    .exec(function(err, docs) { 
+                        console.log(err);
+                        
+                        console.log(docs);
+                        return docs;
+                    });
+                    if(!result){
+                        throw new Error(errorName.NOT_FOUND_DATA);
+                    }
+                    return result.then(docs => {
+                        const req = docs;
+                        console.log(req);
+                        return docs;
+                    }).catch(err =>{
+                        throw new Error(err.message);
+                    });
                 } else {
                     throw new Error(errorName.UNAUTHORIZED);
                 }

@@ -51,10 +51,4 @@ var postSchema = new Schema({
 // support full-text search 
 postSchema.index({post_title: 'text', post_content: 'text' , 
 article_title: 'text' , article_content: 'text'});
-// MyModel.find({$text: {$search: searchString}})
-//        .skip(20)
-//        .limit(10)
-//        .exec(function(err, docs) { 
-
-//         });
 module.exports = mongoose.model('Posts', postSchema);
