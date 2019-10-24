@@ -4,13 +4,14 @@ const graphqlHTTP = require('express-graphql');
 var os = require('os');
 var ifaces = os.networkInterfaces();
 
+const { apolloUploadExpress } = require('apollo-upload-server');
+
 // const schema = require('./src/Schema');
 const schema = require('./src/schema_root');
-const resolvers = require('./src/resolvers');
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 const isAuth = require('./middleware/auth');
 const getErrorCode = require('./error/error');
+const UPLOAD_DIR = './uploads'
 
 const app = express();
 
@@ -18,21 +19,25 @@ const app = express();
 // using middleware
 app.use(isAuth);
 
-app.use('/graphql' , (req, res) => {
-   graphqlHTTP({
-    schema,
-    graphiql: process.env.NODE_ENV === 'development',
-    context: { req },
-    customFormatErrorFn: (err) => {
-      const error = getErrorCode(err.message);
-      const stackError = process.env.NODE_ENV === 'development' ? err.stack : "";
-      if(!error){
-        return ({ message: "Internal server error: " + err.message , statusCode: 501, stack: stackError });
+app.use('/graphql',
+  bodyParser.json(),
+  apolloUploadExpress(/* Options */),
+  graphqlHTTP(async (request, response, graphQLParams) => {
+    // console.log("query raw: " + graphQLParams.query);
+    return {
+      schema,
+      graphiql: process.env.NODE_ENV === 'development',
+      context: { request },
+      customFormatErrorFn: (err) => {
+        const error = getErrorCode(err.message);
+        const stackError = process.env.NODE_ENV === 'development' ? err.stack : "";
+        if (!error) {
+          return ({ message: "Internal server error: " + err.message, statusCode: 501, stack: stackError });
+        }
+        return ({ message: error.message, statusCode: error.statusCode, stack: stackError });
       }
-      return ({ message: error.message, statusCode: error.statusCode, stack: stackError});
-    }
-  })(req, res)
-}
+    };
+  })
 );
 
 
@@ -46,30 +51,30 @@ const connectString = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MON
 // console.log(`string connect:  ${connectString}`);
 
 mongoose.connect(connectString).then(() => {
-    console.log("connected monogo db");
+  console.log("connected monogo db");
 }).catch(err => {
-    console.error("can't connect mongo db");
+  console.error("can't connect mongo db");
 });
 
-app.listen(3000, () =>{
-    Object.keys(ifaces).forEach(function (ifname) {
-        var alias = 0;
-      
-        ifaces[ifname].forEach(function (iface) {
-          if ('IPv4' !== iface.family || iface.internal !== false) {
-            // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
-            return;
-          }
-      
-          if (alias >= 1) {
-            // this single interface has multiple ipv4 addresses
-            console.log(ifname + ':' + alias, iface.address);
-          } else {
-            // this interface has only one ipv4 adress
-            console.log(ifname, iface.address);
-          }
-          ++alias;
-        });
-      });
+app.listen(3000, () => {
+  Object.keys(ifaces).forEach(function (ifname) {
+    var alias = 0;
+
+    ifaces[ifname].forEach(function (iface) {
+      if ('IPv4' !== iface.family || iface.internal !== false) {
+        // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+        return;
+      }
+
+      if (alias >= 1) {
+        // this single interface has multiple ipv4 addresses
+        console.log(ifname + ':' + alias, iface.address);
+      } else {
+        // this interface has only one ipv4 adress
+        console.log(ifname, iface.address);
+      }
+      ++alias;
+    });
+  });
 });
 
