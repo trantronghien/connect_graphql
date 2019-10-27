@@ -8,7 +8,8 @@ const { errorName } = require('../error/errorUtils');
 const { dateToString } = require('../utils/dateUtils');
 const { UserResolverQuery , UserResolverMutation } = require('../src/resolvers/userResolver');
 const { PostResolverMutation , PostResolverQuery } = require('../src/resolvers/postResolver');
-const { fileResolverMutation } = require('../src/resolvers/uploadFile');
+// const { fileResolverMutation } = require('../src/resolvers/uploadFile');
+
 
 const {
        GraphQLObjectType, GraphQLString,
@@ -36,7 +37,7 @@ const Mutation = new GraphQLObjectType({
               // }
               ...UserResolverMutation,
               ...PostResolverMutation,
-              ...fileResolverMutation,
+              // ...fileResolverMutation,
        }
 });
 

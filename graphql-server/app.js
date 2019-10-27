@@ -11,9 +11,45 @@ const schema = require('./src/schema_root');
 const mongoose = require('mongoose');
 const isAuth = require('./middleware/auth');
 const getErrorCode = require('./error/error');
-const UPLOAD_DIR = './uploads'
+let uploadFile = require('./src/file/handleUploadFile');
+const saveInfoFile = require('./src/file/storeFileToDb');
+
 
 const app = express();
+
+// app.post(fileHandler.uploadFile);
+app.post("/upload", (req, res) => {
+  uploadFile(req, res, (error) => {
+    // Nếu có lỗi thì trả về lỗi cho client.
+    // Ví dụ như upload một file không phải file ảnh theo như cấu hình của mình bên trên
+    try {
+      if (error) {
+        throw new Error(`Error when trying to upload: ${error}`);
+      }
+      const reslt = saveInfoFile.saveInfoFileToDb(req.file, "5da876b1f0e77303047e03af");
+      reslt.then(reslt => {
+        res.status(200).json({
+          filename: reslt.file_name
+        });
+      }).catch(err => {
+        throw err;
+      })
+    } catch (error) {
+      res.status(404).json({
+        message: "upload file fail " + error.message
+      });
+    }
+
+    // Không có lỗi thì lại render cái file ảnh về cho client.
+    // Đồng thời file đã được lưu vào thư mục uploads
+    // res.sendFile(path.join(`${__dirname}/uploads/${req.file.filename}`));
+
+  })
+});
+
+// router.post("/multiple-upload", (req, res) => {
+
+// });
 
 // app.use(bodyParser.json());
 // using middleware

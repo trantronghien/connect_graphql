@@ -3,4 +3,10 @@ const isMail = (email) =>{
     return re.test(String(email).toLowerCase());
 }
 
+const isAudioFile = (ext) => {
+    var regexAudio = /\.(?:wav|mp3)$/i
+    return regexAudio.test(String(ext).toLowerCase());
+}
+
 exports.isMail = isMail;
+exports.isAudioFile = isAudioFile;

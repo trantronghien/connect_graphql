@@ -66,30 +66,32 @@ module.exports.fileResolverMutation = {
                 type: GraphQLNonNull(GraphQLUpload)
             }
         },
-        resolve: (parent, { file }, { storeUpload }) => storeUpload(file)
-      },
-      multipleUpload: {
-        description: 'Stores multiple files.',
-        type: GraphQLNonNull(GraphQLList(GraphQLNonNull(FileType))),
-        args: {
-          files: {
-            description: 'Files to store.',
-            type: GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLUpload)))
-          }
-        },
-        async resolve(parent, { files }, { storeUpload }) {
-          const { resolve, reject } = await promisesAll.all(
-            files.map(storeUpload)
-          )
-  
-          if (reject.length)
-            reject.forEach(({ name, message }) =>
-              console.error(`${name}: ${message}`)
-            )
-  
-          return resolve
+        resolve: async (parent, { file }, { storeUpload }) => {
+          console.log(file);
         }
-      }
+      },
+      // multipleUpload: {
+      //   description: 'Stores multiple files.',
+      //   type: GraphQLNonNull(GraphQLList(GraphQLNonNull(FileType))),
+      //   args: {
+      //     files: {
+      //       description: 'Files to store.',
+      //       type: GraphQLNonNull(GraphQLList(GraphQLNonNull(GraphQLUpload)))
+      //     }
+      //   },
+      //   async resolve(parent, { files }, { storeUpload }) {
+      //     const { resolve, reject } = await promisesAll.all(
+      //       files.map(storeUpload)
+      //     )
+  
+      //     if (reject.length)
+      //       reject.forEach(({ name, message }) =>
+      //         console.error(`${name}: ${message}`)
+      //       )
+  
+      //     return resolve
+      //   }
+      // }
 };
 
 
