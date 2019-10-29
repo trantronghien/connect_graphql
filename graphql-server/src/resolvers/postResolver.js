@@ -100,7 +100,7 @@ module.exports.PostResolverMutation = {
                             posts.article_title = !post.article_title ? post.post_title: post.article_title;
                             posts.article_content = !post.article_content ? post.article_content: post.article_content;
                         }
-                        posts.createIndex({ post_title: "text" , post_content:"text" });
+                        // Posts.createIndex({ post_title: "text" , post_content:"text" });
                         return posts.save();
                     })
                 ).then(listPost => {
@@ -318,13 +318,13 @@ module.exports.PostResolverMutation = {
         resolve: async (parent, { search, access_token , page , limit }, context) => {
             try {
                 if (!access_token || access_token === '') {
-                    if (!context.req.isAuth) {
+                    if (!context.request.isAuth )  {
                         throw new Error(errorName.UNAUTHORIZED);
                     }
                 }
                 const userInfo = checkAccessToken(access_token);
                 if (userInfo !== null) {
-                    const result = Posts.find({$text: {$search: search}})
+                    const result = await Posts.find({$text: {$search: search}})
                     // .sort()
                     .skip(page)
                     .limit(limit)
@@ -338,8 +338,6 @@ module.exports.PostResolverMutation = {
                         throw new Error(errorName.NOT_FOUND_DATA);
                     }
                     return result.then(docs => {
-                        const req = docs;
-                        console.log(req);
                         return docs;
                     }).catch(err =>{
                         throw new Error(err.message);

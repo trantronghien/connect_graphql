@@ -40,7 +40,7 @@ exports.errorType = {
         statusCode: 401
     },
     POST_CREATE_ERROR: {
-        message: 'Không thể tạo bài viết này',
+        message: 'Không thể tạo bài viết này, phải có đầy đủ trường bắt buộc',
         statusCode: 400
     },
     POST_NOT_FOUND_BY_ID:{
