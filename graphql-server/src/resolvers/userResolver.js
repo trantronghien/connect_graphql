@@ -134,7 +134,7 @@ module.exports.UserResolverMutation = {
             fields: () => ({
                 userId: { type: GraphQLID },
                 token: { type: GraphQLString },
-                tokenExpiration: { type: GraphQLInt }
+                tokenExpiration: { type: GraphQLString }
             })
         }),
         description: "login account",
@@ -151,14 +151,16 @@ module.exports.UserResolverMutation = {
             if (!isEqual) {
                 throw new Error(errorName.PASSWORD_INCORRECT);
             }
+            var SignOptions = {
+                // algorithm: "ES512",
+                expiresIn: "7d"
+            };
             const token = jwt.sign(
                 { userId: user.id, email: user.email },
                 process.env.SECRET_KEY,
-                {
-                    expiresIn: '24h'
-                }
+                SignOptions
             );
-            return { userId: user.id, token: token, tokenExpiration: 1 };
+            return { userId: user.id, token: token, tokenExpiration: SignOptions.expiresIn };
         }
 
     }

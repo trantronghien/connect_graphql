@@ -4,6 +4,7 @@
         "MONGO_PASSWORD": "Abc123456789",
         "MONGO_DB": "event-react",
         "NODE_ENV": "development",
-        "SECRET_KEY": "somesupersecretkey"
+        "SECRET_KEY": "somesupersecretkey",
+        "UPLOAD_DIR": "uploads"
     }
 }

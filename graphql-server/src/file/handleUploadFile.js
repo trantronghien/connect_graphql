@@ -1,9 +1,16 @@
 let multer = require("multer");
-const UPLOAD_DIR = 'uploads'
+let fs = require("fs");
+const UPLOAD_DIR = process.env.UPLOAD_DIR
+var dir = `./${UPLOAD_DIR}`;
 // Khởi tạo biến cấu hình cho việc lưu trữ file upload
 let diskStorage = multer.diskStorage({
   destination: (req, file, callback) => {
     // Định nghĩa nơi file upload sẽ được lưu lại
+    if (!fs.existsSync(dir)){
+      console.log('create upload folder: ' + dir);
+      fs.mkdirSync(dir);
+    }
+    console.log("upload dir: " + UPLOAD_DIR);
     callback(null, UPLOAD_DIR);
   },
   filename: (req, file, callback) => {
@@ -15,6 +22,7 @@ let diskStorage = multer.diskStorage({
     //   let errorMess = `The file <strong>${file.originalname}</strong> is invalid. Only allowed to upload image jpeg or png.`;
     //   return callback(errorMess, null);
     // }
+    // console.log(req);
     
     // Tên của file thì mình nối thêm một cái nhãn thời gian để đảm bảo không bị trùng.
     let filename = `${Date.now()}_${file.originalname}`;

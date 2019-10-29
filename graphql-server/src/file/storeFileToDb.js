@@ -7,7 +7,6 @@ var ffmetadata = require("ffmetadata");
 const stringUtil = require('../../utils/StringUtils');
 
 
-
 let saveInfoFileToDb = (file, userId) => {
 
     // console.log(`${file} ____ ${userId}`);
@@ -32,8 +31,8 @@ let saveInfoFileToDb = (file, userId) => {
         path: file.path,
         size: file.size
     });
-    return fileInfo;
-    // return fileInfo.save();
+    // return fileInfo;
+    return fileInfo.save();
 }
 
 module.exports = {

@@ -8,6 +8,7 @@ const { errorName } = require('../error/errorUtils');
 const { dateToString } = require('../utils/dateUtils');
 const { UserResolverQuery , UserResolverMutation } = require('../src/resolvers/userResolver');
 const { PostResolverMutation , PostResolverQuery } = require('../src/resolvers/postResolver');
+const { FileResolverQuery , FileResolverMutation } = require('../src/resolvers/fileResolver');
 // const { fileResolverMutation } = require('../src/resolvers/uploadFile');
 
 
@@ -23,6 +24,7 @@ const RootQuery = new GraphQLObjectType({
        name: 'Query',
        fields: {
               ...UserResolverQuery,
+              ...FileResolverQuery,
        }
 });
 
@@ -38,6 +40,7 @@ const Mutation = new GraphQLObjectType({
               ...UserResolverMutation,
               ...PostResolverMutation,
               // ...fileResolverMutation,
+              ...FileResolverMutation,
        }
 });
 
