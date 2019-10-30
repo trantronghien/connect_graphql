@@ -12,6 +12,7 @@ exports.errorName = {
     FILE_NOT_FOUND: 'FILE_NOT_FOUND',
     KEY_FILE_NOT_FOUND: 'KEY_FILE_NOT_FOUND',  
     UNAUTHORIZED_DELETE: 'UNAUTHORIZED_DELETE',
+    EDIT_POST_FAIL: 'EDIT_POST_FAIL',
 }
 
 exports.errorType = {
@@ -61,6 +62,10 @@ exports.errorType = {
     },
     KEY_FILE_NOT_FOUND: {
         message: 'key file not found',
+        statusCode: 404
+    },
+    EDIT_POST_FAIL:{
+        message: 'edit post fail',
         statusCode: 404
     },
     ORTHER: {

@@ -6,7 +6,19 @@ var postSchema = new Schema({
         type: Date,
         required: true
     },
+    post_edit_at: {
+        type: Date,
+        required: false
+    },
     post_title:{
+        type: String,
+        required: true
+    },
+    post_meta_title:{
+        type: String,
+        required: true
+    },
+    post_meta_content: {
         type: String,
         required: true
     },

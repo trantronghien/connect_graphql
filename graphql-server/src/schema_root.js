@@ -24,6 +24,7 @@ const RootQuery = new GraphQLObjectType({
        name: 'Query',
        fields: {
               ...UserResolverQuery,
+              ...PostResolverQuery,
               ...FileResolverQuery,
        }
 });

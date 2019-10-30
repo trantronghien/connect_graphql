@@ -20,12 +20,9 @@ const {
 } = graphql;
 
 const checkAccessToken = access_token => {
-    if (!access_token) {
+    if (!access_token  || access_token === '') {
         return false;
     } else {
-        if (!access_token || access_token === '') {
-            return false;
-        }
         let decodedToken = jwt.verify(access_token, process.env.SECRET_KEY);
         return decodedToken;
     }
