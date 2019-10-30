@@ -1,0 +1,7 @@
+mutation LoginResult($email: String!, $password: String!){
+    login(email: $email , password: $password){
+        userId
+        token
+        tokenExpiration
+    }
+}
