@@ -15,16 +15,6 @@ const {
     GraphQLInputObjectType
 } = graphql;
 
-const UserType = new GraphQLObjectType({
-    name: 'User',
-    fields: () => ({
-        _id: { type: GraphQLID },
-        email: { type: GraphQLString },
-        created: { type: GraphQLString },
-        permission: { type: GraphQLString },
-        message: { type: GraphQLString }
-    })
-});
 
 const UserInput = new GraphQLInputObjectType({
     name: 'UserInput',
@@ -49,8 +39,19 @@ const checkAccessToken = access_token => {
 }
 
 module.exports.UserResolverQuery = {
-    User: {
-        type: UserType,
+    getUserInfo: {
+        type: new GraphQLObjectType({
+            name: 'UserInfo',
+            fields: () => ({
+                current_admin: { type: GraphQLString },
+                _id: { type: GraphQLID },
+                email: { type: GraphQLString },
+                created: { type: GraphQLString },
+                permission: { type: GraphQLString },
+                message: { type: GraphQLString }
+            })
+        }),
+        description: "Lấy thông tin user từ admin permission == 1, không hỗ trợ header",
         args: {
             email: { type: GraphQLString },
             access_token: { type: GraphQLString }
@@ -58,21 +59,30 @@ module.exports.UserResolverQuery = {
         resolve: async (parent, args, context) => {
             try {
                 if (!args.access_token || args.access_token === '') {
-                    if (!context.req.isAuth) {
+                    if (!context.request.isAuth) {
                         throw new Error(errorName.UNAUTHORIZED);
                     }
                 } else {
-                    if (checkAccessToken(args.access_token)) {
-                        const user = await User.findOne({ email: args.email });
-                        if (!user || user.email === 'undefined') {
-                            throw new Error(errorName.USER_NOT_EXISTS);
+                    let decodedToken = jwt.verify(args.access_token, process.env.SECRET_KEY);
+                    if (decodedToken !== null) {
+                        const adminUser = await User.findById(decodedToken.userId);
+                        if(adminUser  !== null && adminUser.permission === 1){
+                            const user = await User.findOne({ email: args.email });
+                            if (!user || user.email === 'undefined') {
+                                throw new Error(errorName.USER_NOT_EXISTS);
+                            }
+                            return {
+                                _id: user._id,
+                                current_admin: adminUser.email,
+                                email: user.email,
+                                created: user.created,
+                                permission: user.permission,
+                                message: "success"
+                            };
+                        }else{
+                            throw new Error(errorName.UNAUTHORIZED_NOT_ADMIN);
                         }
-                        return {
-                            _id: user._id,
-                            email: user.email,
-                            created: user.created,
-                            message: "success"
-                        };
+                        
                     } else {
                         throw new Error(errorName.UNAUTHORIZED);
                     }

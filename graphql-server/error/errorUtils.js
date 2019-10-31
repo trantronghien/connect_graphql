@@ -1,5 +1,6 @@
 exports.errorName = {
     UNAUTHORIZED: 'UNAUTHORIZED',
+    UNAUTHORIZED_NOT_ADMIN: 'UNAUTHORIZED_NOT_ADMIN',
     USER_NOT_EXISTS: 'USER_NOT_EXISTS',
     USER_ALREADY_EXISTS: 'USER_ALREADY_EXISTS',
     MAIL_NOT_AVAILABLE: 'MAIL_NOT_AVAILABLE',
@@ -18,6 +19,10 @@ exports.errorName = {
 exports.errorType = {
     UNAUTHORIZED: {
         message: 'Authentication is needed to get requested response.',
+        statusCode: 401
+    },
+    UNAUTHORIZED_NOT_ADMIN:{
+        message: 'Authentication bạn không có quyền admin',
         statusCode: 401
     },
     UNAUTHORIZED_DELETE:{
