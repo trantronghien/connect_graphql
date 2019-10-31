@@ -11,14 +11,18 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 public final class GraphqlClient {
     public static final String AUTH_TOKEN = "";
     public static final String BASE_URL = "http://localhost:3000/graphql";
 
     public static ApolloClient setupApollo() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.level(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient okHttp = new OkHttpClient
                 .Builder()
+                .addInterceptor(logging)
                 .addInterceptor(new Interceptor() {
                     @NotNull
                     @Override
