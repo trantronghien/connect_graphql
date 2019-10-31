@@ -1,0 +1,9 @@
+ 
+ ## android client 
+ ### cài đặt apollo generate code
+ npm install -g apollo
+ 
+ ### cmd: download schema <package_graphql>
+ apollo client:download-schema --endpoint=http://localhost:3000/graphql
+ 
+ ### tạo file .graphql và rebuild project

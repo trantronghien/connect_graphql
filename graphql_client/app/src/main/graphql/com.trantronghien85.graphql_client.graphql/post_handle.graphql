@@ -1,0 +1,72 @@
+mutation EditPostResult($postEdit: PostsEditInput!){
+    editPost(input: $postEdit){
+        _id
+        article_title
+        post_title
+    }
+}
+
+mutation CreatePostResult($inputCreate: [PostsInput]!){
+    createPosts(input: $inputCreate){
+        post_title
+        post_status
+        post_type
+    }
+}
+
+
+mutation CommentPostResult($input: CommentInput!){
+    comment(input: $input){
+        id
+        posts_id
+        user_id
+        comment_at
+    }
+}
+
+
+mutation DeleteCommentResult($comment_id: ID!){
+    deleteComment(comment_id: $comment_id){
+        status
+        comment_id
+        message
+    }
+}
+
+mutation LikePostResult($input: LiketInput!){
+    likePost(input: $input){
+        posts_id
+        like_type
+        like_status
+    }
+}
+
+#query  getPostByUserResult(){
+#    getPostByUser(){
+##        posts {
+#            post_title
+#            _id
+#            creator
+##        }
+#    }
+#}
+
+query  getPostTimeResult($from_date: String, $to_date: String, $page: Int, $limit: Int){
+    getPosts(from_date: $from_date, to_date: $to_date, page: $page, limit: $limit){
+        posts {
+            post_title
+            _id
+            post_content
+            post_status
+            creator
+        }
+    }
+}
+
+
+query  searchPostResult($search: String, $page: Int, $limit: Int){
+    searchPost(search: $search, page: $page, limit: $limit){
+        post_title
+        _id
+    }
+}

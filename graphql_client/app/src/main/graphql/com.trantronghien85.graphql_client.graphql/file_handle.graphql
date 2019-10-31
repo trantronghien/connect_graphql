@@ -1,0 +1,9 @@
+query getFileResult($key_file: String!){
+    getFile(key_file: $key_file){
+        key_file
+        link
+        link_download,
+        upload_at
+        media_type
+    }
+}
