@@ -15,6 +15,16 @@ const {
     GraphQLInputObjectType
 } = graphql;
 
+const UserType = new GraphQLObjectType({
+    name: 'User',
+    fields: () => ({
+        _id: { type: GraphQLID },
+        email: { type: GraphQLString },
+        created: { type: GraphQLString },
+        permission: { type: GraphQLString },
+        message: { type: GraphQLString }
+    })
+});
 
 const UserInput = new GraphQLInputObjectType({
     name: 'UserInput',
