@@ -48,7 +48,7 @@ module.exports.FileResolverQuery = {
         resolve: async (parent, { key_file, access_token }, context) => {
             try {
                 if (!access_token || access_token === '') {
-                    if (!context.req.isAuth) {
+                    if (!context.request.isAuth) {
                         throw new Error(errorName.UNAUTHORIZED);
                     }
                 }
