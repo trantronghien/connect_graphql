@@ -8,10 +8,10 @@ COPY package*.json ./
 
 USER node
 
-RUN npm install
+RUN npm update
 
 COPY --chown=node:node . .
 
 EXPOSE 8080
 
-CMD [ "node", "app.js" ]
+CMD [ "npm", "start" ]
