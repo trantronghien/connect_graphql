@@ -35,19 +35,6 @@ const UserInput = new GraphQLInputObjectType({
     })
 });
 
-
-const checkAccessToken = access_token => {
-    if (!access_token || access_token === '') {
-        return false;
-    } else {
-        let decodedToken = jwt.verify(access_token, process.env.SECRET_KEY);
-        if (!decodedToken) {
-            return false;
-        }
-        return true;
-    }
-}
-
 module.exports.UserResolverQuery = {
     getUserInfo: {
         type: new GraphQLObjectType({

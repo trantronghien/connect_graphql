@@ -1,7 +1,8 @@
-const jwt = require('jsonwebtoken');
+
 const graphql = require('graphql');
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config();
 
 const File = require('../../models/file_model');
 
@@ -9,6 +10,8 @@ const { dateToString, currentDate } = require('../../utils/dateUtils');
 const { errorName } = require('../../error/errorUtils');
 const { config } = require('../../utils/config');
 const User = require('../../models/user');
+
+const { checkAccessToken } = require('../../utils/security');
 
 const {
     GraphQLObjectType, GraphQLString,
@@ -19,14 +22,14 @@ const {
     GraphQLInputObjectType
 } = graphql;
 
-const checkAccessToken = access_token => {
-    if (!access_token  || access_token === '') {
-        return false;
-    } else {
-        let decodedToken = jwt.verify(access_token, process.env.SECRET_KEY);
-        return decodedToken;
-    }
-}
+// const checkAccessToken = access_token => {
+//     if (!access_token  || access_token === '') {
+//         return false;
+//     } else {
+//         let decodedToken = jwt.verify(access_token, process.env.SECRET_KEY);
+//         return decodedToken;
+//     }
+// }
 
 module.exports.FileResolverQuery = {
     getFile: {

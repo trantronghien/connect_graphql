@@ -1,11 +1,5 @@
 
 const graphql = require('graphql');
-const resolvers = require('./resolvers');
-const User = require('../models/user');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { errorName } = require('../error/errorUtils');
-const { dateToString } = require('../utils/dateUtils');
 const { UserResolverQuery , UserResolverMutation } = require('../src/resolvers/userResolver');
 const { PostResolverMutation , PostResolverQuery } = require('../src/resolvers/postResolver');
 const { FileResolverQuery , FileResolverMutation } = require('../src/resolvers/fileResolver');

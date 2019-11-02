@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 const graphql = require('graphql');
 const Posts = require('../../models/posts');
 const Like = require('../../models/like');
@@ -8,6 +7,8 @@ const { errorName } = require('../../error/errorUtils');
 const { config } = require('../../utils/config');
 const stringUtil = require('../../utils/StringUtils');
 
+const { checkAccessToken } = require('../../utils/security');
+
 const {
     GraphQLObjectType, GraphQLString,
     GraphQLID, GraphQLInt, GraphQLSchema,
@@ -16,17 +17,6 @@ const {
     GraphQLBoolean,
     GraphQLInputObjectType
 } = graphql;
-
-
-const checkAccessToken = access_token => {
-    if (!access_token || access_token === '') {
-        return false;
-    } else {
-        let decodedToken = jwt.verify(access_token, process.env.SECRET_KEY);
-        return decodedToken;
-    }
-}
-
 
 const PostType = new GraphQLObjectType({
     name: 'Posts',

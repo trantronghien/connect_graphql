@@ -4,6 +4,7 @@ const graphqlHTTP = require('express-graphql');
 var os = require('os');
 var ifaces = os.networkInterfaces();
 var fs = require('fs');
+require('dotenv').config();
 
 const { apolloUploadExpress } = require('apollo-upload-server');
 
@@ -103,6 +104,7 @@ app.use('/graphql',
 // });
 
 const connectString = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-gi2y8.gcp.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
+console.log(connectString);
 
 mongoose.connect(connectString).then(() => {
   console.log("connected monogo db");

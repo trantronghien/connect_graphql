@@ -4,6 +4,7 @@
   "description": "example graphql",
   "main": "index.js",
   "scripts": {
+    "test": "node app.js",
     "start": "nodemon app.js",
     "debug": "nodemon --inspect app.js"
   },
