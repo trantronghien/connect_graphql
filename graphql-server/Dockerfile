@@ -12,6 +12,7 @@ RUN npm update
 
 COPY --chown=node:node . .
 
-EXPOSE 8080
+# Expose is NOT supported by Heroku
+#EXPOSE 8080
 
 CMD [ "npm", "start" ]

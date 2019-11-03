@@ -15,58 +15,68 @@ const isAuth = require('./middleware/auth');
 const getErrorCode = require('./error/error');
 let uploadFile = require('./src/file/handleUploadFile');
 const saveInfoFile = require('./src/file/storeFileToDb');
-const { errorName } = require('./error/errorUtils');
+const { errorName, errorType } = require('./error/errorUtils');
+
+const { checkAccessToken } = require('./utils/security')
 
 
 const app = express();
+app.use(isAuth);
+
 
 // app.post(fileHandler.uploadFile);
 app.post("/upload", (req, res) => {
-  uploadFile(req, res, (error) => {
-    var response = {
-      filename: "",
-      file_key: "",
-    };
-    try {
-      if (error) {
-        throw new Error(`Error when trying to upload: ${error}`);
+  if (!req.isAuth) {
+    res.status(200).json({ message: errorType.UNAUTHORIZED });
+  } else {
+    uploadFile(req, res, (error) => {
+      var response = {
+        filename: "",
+        file_key: "",
+      };
+      try {
+        if (error) {
+          throw new Error(`Error when trying to upload: ${error}`);
+        }
+        const reslt = saveInfoFile.saveInfoFileToDb(req.file, req.userId);
+
+        reslt.then(reslt => {
+          response.filename = reslt.file_name;
+          response.file_key = reslt._id.toString();
+          response.message = "success";
+
+          res.status(200).json(response);
+        }).catch(err => {
+          throw err;
+        })
+      } catch (error) {
+        response.message = "upload file fail " + error.message
+        res.status(404).json(response);
       }
-      const reslt = saveInfoFile.saveInfoFileToDb(req.file, "5da876b1f0e77303047e03af");
+    })
+  }
 
-      reslt.then(reslt => {
-        response.filename = reslt.file_name;
-        response.file_key = reslt._id.toString();
-        response.message = "success";
-
-        res.status(200).json(response);
-      }).catch(err => {
-        throw err;
-      })
-    } catch (error) {
-      response.message = "upload file fail " + error.message
-      res.status(404).json(response);
-    }
-  })
 });
 
 app.get('/download', function (req, res) {
-  var response = { message:"", error_code: 404 };
-  try {
-    const file = `${__dirname}/${process.env.UPLOAD_DIR}/${req.query.name}`;
-    var download = !req.query.download ? 0 : 1;
-    if (!fs.existsSync(file)) {
-      throw new Error(errorName.FILE_NOT_FOUND);
+
+    var response = { message: "", error_code: 404 };
+    try {
+      const file = `${__dirname}/${process.env.UPLOAD_DIR}/${req.query.name}`;
+      var download = !req.query.download ? 0 : 1;
+      if (!fs.existsSync(file)) {
+        throw new Error(errorName.FILE_NOT_FOUND);
+      }
+      if (!file) { throw new Error(errorName.KEY_FILE_NOT_FOUND) }
+      if (download === 1) {
+        res.download(file); // Set disposition and send it.
+      } else {
+        var filestream = fs.createReadStream(file);
+        filestream.pipe(res);
+      }
+    } catch (error) {
+      res.status(200).json(getErrorCode(error.message));
     }
-    if (!file) { throw new Error(errorName.KEY_FILE_NOT_FOUND) }
-    if (download === 1) {
-      res.download(file); // Set disposition and send it.
-    } else {
-      var filestream = fs.createReadStream(file);
-      filestream.pipe(res);
-    }
-  } catch (error) {
-    res.status(200).json(getErrorCode(error.message));
-  }
 });
 
 // router.post("/multiple-upload", (req, res) => {
@@ -75,7 +85,6 @@ app.get('/download', function (req, res) {
 
 // app.use(bodyParser.json());
 // using middleware
-app.use(isAuth);
 
 app.use('/graphql',
   bodyParser.json(),
@@ -111,7 +120,14 @@ mongoose.connect(connectString).then(() => {
 }).catch(err => {
   console.error("can't connect mongo db");
 });
-app.listen(3000);
+
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, function (err) {
+  if (err) throw err
+  console.log(`server listening on ${PORT}`)
+});
+
 // app.listen(3000, () => {
 //   Object.keys(ifaces).forEach(function (ifname) {
 //     var alias = 0;

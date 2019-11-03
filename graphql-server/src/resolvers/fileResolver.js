@@ -57,9 +57,16 @@ module.exports.FileResolverQuery = {
                 }
                 const userInfo = checkAccessToken(access_token);
                 if (userInfo !== null) {
-                    const file = await File.findById(key_file);
+                    var userId = !context.request.isAuth ? userInfo.userId : context.request.userId; 
+                    const file = await File.findOne({ _id : key_file , user_id: userId});
                     if (!file) { throw new Error(errorName.KEY_FILE_NOT_FOUND) }
-                    var pathFile = `localhost:3000/download?name=${file.file_name}`
+                    const PORT = process.env.PORT || 8080;
+                    var pathFile;
+                    if(process.env.DELOY_HEROKU){
+                        pathFile = `${context.request.host}/download?name=${file.file_name}`
+                    }else{
+                        pathFile = `${context.request.host}:${PORT}/download?name=${file.file_name}`
+                    }
                     return {
                         key_file: file._id.toString(),
                         link: pathFile,

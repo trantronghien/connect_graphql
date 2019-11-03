@@ -14,6 +14,7 @@ exports.errorName = {
     KEY_FILE_NOT_FOUND: 'KEY_FILE_NOT_FOUND',  
     UNAUTHORIZED_DELETE: 'UNAUTHORIZED_DELETE',
     EDIT_POST_FAIL: 'EDIT_POST_FAIL',
+    KEY_FILE_NOT_ACCESS: 'KEY_FILE_NOT_ACCESS',
 }
 
 exports.errorType = {
@@ -66,7 +67,7 @@ exports.errorType = {
         statusCode: 404
     },
     KEY_FILE_NOT_FOUND: {
-        message: 'key file not found',
+        message: 'key file không hợp lệ hoặc Tài khoản này không có quyền truy cập file này',
         statusCode: 404
     },
     EDIT_POST_FAIL:{
