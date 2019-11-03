@@ -14,30 +14,35 @@ import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 public final class GraphqlClient {
-    public static final String AUTH_TOKEN = "";
-    public static final String BASE_URL = "http://localhost:3000/graphql";
+    public static String AUTH_TOKEN = "";
+    public static final String BASE_URL = "https://mighty-tor-63635.herokuapp.com/graphql";
 
-    public static ApolloClient setupApollo() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.level(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient okHttp = new OkHttpClient
-                .Builder()
-                .addInterceptor(logging)
-                .addInterceptor(new Interceptor() {
-                    @NotNull
-                    @Override
-                    public Response intercept(@NotNull Chain chain) throws IOException {
-                        Request original = chain.request();
-                        Request.Builder builder = original.newBuilder().method(original.method(),
-                                original.body());
-                        builder.addHeader("Authorization"
-                                , "Bearer " + AUTH_TOKEN);
-                        return chain.proceed(builder.build());
-                    }
-                })
-                .build();
+    private static OkHttpClient okHttp;
+    public static ApolloClient setupApollo(boolean resest) {
+        if (resest || okHttp == null){
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.level(HttpLoggingInterceptor.Level.HEADERS);
+            logging.level(HttpLoggingInterceptor.Level.BODY);
+            okHttp = new OkHttpClient
+                    .Builder()
+                    .addInterceptor(logging)
+                    .addInterceptor(new Interceptor() {
+                        @NotNull
+                        @Override
+                        public Response intercept(@NotNull Chain chain) throws IOException {
+                            Request original = chain.request();
+                            Request.Builder builder = original.newBuilder().method(original.method(),
+                                    original.body());
+                            builder.addHeader("Authorization"
+                                    , "Bearer " + AUTH_TOKEN);
+                            return chain.proceed(builder.build());
+                        }
+                    })
+                    .build();
+        }
+
         return ApolloClient.builder()
-                .serverUrl(BuildConfig.OBJECT_SERVER_IP)
+                .serverUrl(BASE_URL)
                 .okHttpClient(okHttp)
                 .build();
     }
