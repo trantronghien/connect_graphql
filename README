@@ -1,4 +1,4 @@
- ## android client 
+# Android client 
  ### cài đặt apollo generate code
  npm install -g apollo
  
@@ -7,7 +7,8 @@
  
  ### tạo file .graphql và rebuild project
  
- 
+# Nodejs graphql server
+
  ### deloy docker images to heroku 
  + link: https://github.com/heroku/heroku-container-registry
  + login `heroku container:login`
