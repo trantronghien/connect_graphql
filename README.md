@@ -18,3 +18,4 @@
  + open app: `heroku open --app ${YOUR_APP_NAME}`
  + pull image: `heroku container:pull web ${YOUR_APP_NAME}`
  
+### heroku public example:  [link](https://mighty-tor-63635.herokuapp.com/graphql)
