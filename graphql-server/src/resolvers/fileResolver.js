@@ -30,19 +30,20 @@ const {
 //         return decodedToken;
 //     }
 // }
+var FileInfo = new GraphQLObjectType({
+    name: "FileInfo",
+    fields: () => ({
+        key_file: { type: GraphQLID },
+        link: { type: GraphQLString },
+        link_download: { type: GraphQLString },
+        media_type: { type: GraphQLString },
+        upload_at: { type: GraphQLString },
+    })
+})
 
 module.exports.FileResolverQuery = {
     getFile: {
-        type: new GraphQLObjectType({
-            name: "FileInfo",
-            fields: () => ({
-                key_file: { type: GraphQLID },
-                link: { type: GraphQLString },
-                link_download: { type: GraphQLString },
-                media_type: { type: GraphQLString },
-                upload_at: { type: GraphQLString },
-            })
-        }),
+        type: FileInfo,
         description: "Lấy thông tin file bởi key file",
         args: {
             access_token: { type: GraphQLString },
@@ -74,6 +75,58 @@ module.exports.FileResolverQuery = {
                         media_type: file.media_type,
                         upload_at: dateToString(file.upload_at),
                     }
+                } else {
+                    throw new Error(errorName.UNAUTHORIZED);
+                }
+            } catch (err) {
+                throw err;
+            }
+
+        }
+
+    },
+    getFileByUser: {
+        type: new GraphQLList(FileInfo),
+        description: "Lấy thông tin file bởi user và filter type",
+        args: {
+            access_token: { type: GraphQLString },
+            type_file: { type: GraphQLString  }
+        },
+        resolve: async (parent, { type_file, access_token }, context) => {
+            try {
+                if (!access_token || access_token === '') {
+                    if (!context.request.isAuth) {
+                        throw new Error(errorName.UNAUTHORIZED);
+                    }
+                }
+                const userInfo = checkAccessToken(access_token);
+                if (userInfo !== null) {
+                    var userId = !context.request.isAuth ? userInfo.userId : context.request.userId;
+                    var file;
+                    if(!type_file){
+                        files = await File.find({user_id: userId});
+                    }else{
+                        files = await File.find({ type_name : type_file , user_id: userId});
+                    }
+                    if (!files) { throw new Error(errorName.KEY_FILE_NOT_FOUND) }
+                    const PORT = process.env.PORT || 8080;
+                    var pathFile;
+                    var results = [];
+                    files.forEach(file => {
+                        if(process.env.DELOY_HEROKU){
+                            pathFile = `${context.request.host}/download?name=${file.file_name}`
+                        }else{
+                            pathFile = `${context.request.host}:${PORT}/download?name=${file.file_name}`
+                        }
+                        results.push({
+                            key_file: file._id.toString(),
+                            link: pathFile,
+                            link_download: pathFile + '&download=1',
+                            media_type: file.media_type,
+                            upload_at: dateToString(file.upload_at),
+                        });
+                    });
+                    return results;
                 } else {
                     throw new Error(errorName.UNAUTHORIZED);
                 }
