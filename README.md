@@ -11,7 +11,7 @@
  + link: https://github.com/heroku/heroku-container-registry
  + login `heroku container:login`
  + create a Heroku app `heroku create`  ==> tạo thành công log show tên app
- + build image và đẩy lên cloud heroku `heroku container:push web --app ${YOUR_APP_NAME}`
+ + build image và push cloud heroku `heroku container:push web --app ${YOUR_APP_NAME}` lưu ý là đảm bảo nơi thực thi lệnh cùng vs thư mục docker file.
  + release: `heroku container:release web --app ${YOUR_APP_NAME}`
  + open app: `heroku open --app ${YOUR_APP_NAME}`
  + pull image: `heroku container:pull web ${YOUR_APP_NAME}`
