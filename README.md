@@ -1,15 +1,13 @@
 # Android client 
- ### cài đặt apollo generate code
- npm install -g apollo
- 
- ### cmd: download schema <package_graphql>
- apollo client:download-schema --endpoint=http://localhost:3000/graphql
- 
+ ### cài đặt apollo
+ + b1: trong project android tạo package `/app/src/main/graphql/<package_app>.graphql/`   (*)
+ + b2: cài đặt apollo lib `npm install -g apollo` .
+ + b3: trong thư mục mới tạo ra ở (*) `apollo client:download-schema --endpoint=http://localhost:3000/graphql` cú pháp này lấy schema từ graphql server.
  ### tạo file .graphql và rebuild project
+ + file __.graphql__ là tập các query đến graphql những file này sẽ được generate __java code__.
  
 # Nodejs graphql server
-
- ### deloy docker images to heroku 
+ ### deloy docker images graphql to heroku 
  + link: https://github.com/heroku/heroku-container-registry
  + login `heroku container:login`
  + create a Heroku app `heroku create`  ==> tạo thành công log show tên app
