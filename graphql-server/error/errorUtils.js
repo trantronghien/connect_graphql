@@ -13,6 +13,7 @@ exports.errorName = {
     FILE_NOT_FOUND: 'FILE_NOT_FOUND',
     KEY_FILE_NOT_FOUND: 'KEY_FILE_NOT_FOUND',  
     UNAUTHORIZED_DELETE: 'UNAUTHORIZED_DELETE',
+    DIR_NOT_FOUND: 'DIR_NOT_FOUND',
     EDIT_POST_FAIL: 'EDIT_POST_FAIL',
     KEY_FILE_NOT_ACCESS: 'KEY_FILE_NOT_ACCESS',
 }
@@ -72,6 +73,10 @@ exports.errorType = {
     },
     EDIT_POST_FAIL:{
         message: 'edit post fail',
+        statusCode: 404
+    },
+    DIR_NOT_FOUND:{
+        message: 'dir not exists',
         statusCode: 404
     },
     ORTHER: {

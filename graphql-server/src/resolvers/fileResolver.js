@@ -171,23 +171,34 @@ module.exports.FileResolverMutation = {
                         // delete file in dir 
                         const directory = process.env.UPLOAD_DIR;
                         var countFileDeleted = 0;
-                        fs.readdir(directory, (err, files) => {
-                            if (err) throw err;
-                            for (const file of files) {
-                                countFileDeleted++;
-                                fs.unlink(path.join(directory, file), err => {
-                                    if (err){
-                                        // countFileDeleted--;
-                                        throw err;
-                                    }
-                                });
+                        if (fs.existsSync(directory)) {
+                            console.log("thu muc: " + directory);
+                            
+                            fs.readdir(directory, (err, files) => {
+                                if (err) throw err;
+                                for (const file of files) {
+                                    countFileDeleted++;
+                                    fs.unlink(path.join(directory, file), err => {
+                                        if (err){
+                                            // countFileDeleted--;
+                                            throw err;
+                                        }
+                                    });
+                                }
+                            });
+                            return {
+                                message: "delete all file success",
+                                delete_record_db: file.deletedCount,
+                                delete_record_dir: countFileDeleted
                             }
-                        });
-                        return {
-                            message: "delete all file success",
-                            delete_record_db: file.deletedCount,
-                            delete_record_dir: countFileDeleted
+                        }else{
+                            return {
+                                message: errorName.DIR_NOT_FOUND,
+                                delete_record_db: 0,
+                                delete_record_dir: 0
+                            }
                         }
+                        
                     } else {
                         throw new Error(errorName.UNAUTHORIZED_DELETE);
                     }
