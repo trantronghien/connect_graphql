@@ -11,7 +11,7 @@
   "author": "trantronghien",
   "license": "ISC",
   "dependencies": {
-    "apollo-server-koa": "^2.9.7",
+    "apollo-server-koa": "^2.14.2",
     "apollo-upload-server": "^7.1.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
