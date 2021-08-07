@@ -9,6 +9,7 @@
 # Nodejs graphql server
  ### deloy docker images graphql to heroku 
  + link: https://github.com/heroku/heroku-container-registry
+ + make sure you have srart docker
  + login `heroku container:login`
  + create a Heroku app `heroku create`  ==> tạo thành công log show tên app
  + build image và push cloud heroku `heroku container:push web --app ${YOUR_APP_NAME}` lưu ý là đảm bảo nơi thực thi lệnh cùng vs thư mục docker file.
