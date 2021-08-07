@@ -6,10 +6,10 @@
   "scripts": {
     "test": "node app.js",
     "start": "nodemon app.js",
-    "debug": "nodemon --inspect app.js"
+    "debug": "nodemon -r dotenv/config --inspect app.js"
   },
   "author": "trantronghien",
-  "license": "ISC",
+  "license": "HienTran",
   "dependencies": {
     "apollo-server-koa": "^2.9.7",
     "apollo-upload-server": "^7.1.0",

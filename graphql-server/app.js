@@ -112,13 +112,13 @@ app.use('/graphql',
 //     res.send("hello ");
 // });
 
-const connectString = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-gi2y8.gcp.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
+const connectString = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.gi2y8.gcp.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
 console.log(connectString);
 
 mongoose.connect(connectString).then(() => {
   console.log("connected monogo db");
 }).catch(err => {
-  console.error("can't connect mongo db");
+  console.error(`can't connect mongo db ${err.message}`);
 });
 
 
